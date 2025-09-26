@@ -1,0 +1,7 @@
+{
+	"log_level": "info",
+	"features": {
+		"http_api": false,
+		"dry_run": false
+	}
+}
