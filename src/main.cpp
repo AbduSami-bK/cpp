@@ -2,12 +2,13 @@
 //
 
 #include <csignal>
-#include <cxxopts.hpp>
+#include <CLI/CLI.hpp>
 #include <httplib.h>
 #include <iostream>
 #include <spdlog/spdlog.h>
 #include <thread>
 
+#include "config.h"
 #include "debug_macros.h"
 #include "inc1.h"
 #include "logging.h"
@@ -22,25 +23,22 @@ void signal_handler(int signum) {
 
 int main(int argc, char *argv[]) {
 	// Parse CLI
-	cxxopts::Options options("DebuggableTemplate", "Demo debuggable C++ program");
-	options.add_options()
-		("c,config", "Config file", cxxopts::value<std::string>()->default_value("config/config.json"))
-		("log", "Log level (debug,info,warn,error)", cxxopts::value<std::string>()->default_value("info"))
-		("enable-api", "Enable HTTP API", cxxopts::value<bool>()->default_value("false"))
-		("h,help", "Print usage");
+	AppConfig config;
 
-	auto result = options.parse(argc, argv);
-	if (result.count("help")) {
-		std::cout << options.help() << std::endl;
-		return EXIT_SUCCESS;
-	}
+	// Parse args
+	config.parse_args(argc, argv);
+
+	// 3. Debug print effective config
+	std::cout << "Effective config:\n"
+				<< "  log_level = " << config.log_level << "\n"
+				<< "  dry_run   = " << std::boolalpha << config.dry_run << "\n";
 
 	// Init logger
-    auto logLevel = AppLogging::from_string(result["log"].as<std::string>());
-    AppLogging::init(logLevel);
+	auto logLevel = AppLogging::from_string(config.log_level);
+	AppLogging::init(logLevel);
 	spdlog::info("Starting DebuggableTemplate...");
-    DEBUG_LOG("Debug mode is active");
-	spdlog::debug("Config path: {}", result["config"].as<std::string>());
+	DEBUG_LOG("Debug mode is active");
+	spdlog::debug("Config path: {}", config.config_file);
 
 	// Setup signals
 	std::signal(SIGINT, signal_handler);
@@ -48,7 +46,7 @@ int main(int argc, char *argv[]) {
 
 	// Optional HTTP API
 	std::unique_ptr<std::thread> api_thread;
-	if (result["enable-api"].as<bool>()) {
+	if (config.httpApi) {
 		api_thread = std::make_unique<std::thread>([]() {
 			httplib::Server svr;
 			svr.Get("/hello", [](const httplib::Request &, httplib::Response &res) {

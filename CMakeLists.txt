@@ -19,13 +19,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(spdlog)
 
-# cxxopts
+# CI11
 FetchContent_Declare(
-	cxxopts
-	GIT_REPOSITORY https://github.com/jarro2783/cxxopts.git
-	GIT_TAG v3.2.0
+	CLI11
+	GIT_REPOSITORY https://github.com/CLIUtils/CLI11.git
+	GIT_TAG v2.3.2
 )
-FetchContent_MakeAvailable(cxxopts)
+FetchContent_MakeAvailable(cli11)
 
 # nlohmann/json
 FetchContent_Declare(
@@ -53,13 +53,14 @@ FetchContent_MakeAvailable(Catch2)
 
 add_library(core_options
 	src/logging.cpp
+	src/config.cpp
 )
 target_include_directories(core_options PUBLIC include)
-target_link_libraries(core_options PUBLIC spdlog::spdlog)
+target_link_libraries(core_options PUBLIC spdlog::spdlog CLI11::CLI11)
 
 # Add source to this project's executable.
 add_executable(main src/main.cpp)
-target_link_libraries(main PRIVATE core_options cxxopts nlohmann_json::nlohmann_json httplib::httplib)
+target_link_libraries(main PRIVATE core_options nlohmann_json::nlohmann_json httplib::httplib)
 
 # Tests
 # TODO: Add tests and install targets if needed.
