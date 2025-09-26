@@ -12,5 +12,5 @@ cmake --build build
 ## Run
 
 ```bash
-./build/main --config configs/sample.json --enable-api
+./build/main --config configs/config.json --enable-api
 ```

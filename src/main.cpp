@@ -6,8 +6,12 @@
 #include <httplib.h>
 #include <iostream>
 #include <spdlog/spdlog.h>
+#include <thread>
 
+#include "debug_macros.h"
 #include "inc1.h"
+#include "logging.h"
+
 
 static bool running = true;
 
@@ -21,6 +25,7 @@ int main(int argc, char *argv[]) {
 	cxxopts::Options options("DebuggableTemplate", "Demo debuggable C++ program");
 	options.add_options()
 		("c,config", "Config file", cxxopts::value<std::string>()->default_value("config/config.json"))
+		("log", "Log level (debug,info,warn,error)", cxxopts::value<std::string>()->default_value("info"))
 		("enable-api", "Enable HTTP API", cxxopts::value<bool>()->default_value("false"))
 		("h,help", "Print usage");
 
@@ -31,7 +36,10 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Init logger
+    auto logLevel = AppLogging::from_string(result["log"].as<std::string>());
+    AppLogging::init(logLevel);
 	spdlog::info("Starting DebuggableTemplate...");
+    DEBUG_LOG("Debug mode is active");
 	spdlog::debug("Config path: {}", result["config"].as<std::string>());
 
 	// Setup signals
@@ -52,15 +60,18 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Main loop
+	int counter = 0;
 	while (running) {
 		std::cout << "Hello CMake." << std::endl;
+		DEBUG_LOG("Loop counter: {}", counter++);
 		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		ASSERT_MSG(counter < 20, "Loop exceeded safe threshold");
 	}
 
 	spdlog::info("Shutting down cleanly...");
 	if (api_thread && api_thread->joinable()) {
 		spdlog::info("Stopping HTTP API...");
-		api_thread->detach();	// not graceful, will improve later
+		api_thread->detach();	// TODO: not graceful, will improve later
 	}
 	return EXIT_SUCCESS;
 }
