@@ -1,6 +1,6 @@
-# Debuggable C++ Template
+# C++ Template
 
-A modern C++ template with logging, CLI args, configs, signals, optional HTTP API, tests, and CI.
+A C++ project template
 
 ## Build
 
