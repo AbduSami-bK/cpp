@@ -12,8 +12,16 @@ cmake --build build
 ## Run
 
 ```bash
-./build/main \
-	--config configs/config.json \
-	--enable-api \
-	--log-level debug
+[xflow@ABS-XFLOW cpp]$ ./build/main -h
+C++ Template
+Usage: ./build/main [OPTIONS]
+
+Options:
+  -h,--help                   Print this help message and exit
+  -c,--config TEXT [config/config.json]
+                              Path to config file
+  --dry-run [0]               Run without performing actions
+  --http-api [0]              Enable HTTP API
+  -l,--log TEXT [info]        Log level
+  -v,--version                Show version and exit
 ```
