@@ -12,7 +12,7 @@ cmake --build build
 ## Run
 
 ```bash
-[xflow@ABS-XFLOW cpp]$ ./build/main -h
+[user0@COMPUTER cpp]$ ./build/main -h
 C++ Template
 Usage: ./build/main [OPTIONS]
 
