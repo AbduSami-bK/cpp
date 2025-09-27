@@ -5,9 +5,9 @@
 /// Represents the application configuration loaded from JSON and CLI
 class AppConfig {
 	public:
-		std::string log_level = "info";	///< Logging level: debug/info/warn/error
-		std::string config_file;		///< Path to the loaded config file
-		bool dry_run = false;			///< If true, don’t perform real actions
+		std::string logLevel = "info";	///< Logging level: debug/info/warn/error
+		std::string configFile;		///< Path to the loaded config file
+		bool dryRun = false;			///< If true, don’t perform real actions
 		bool httpApi = false;			///<
 
 		/// Loads configuration from a JSON file into an AppConfig

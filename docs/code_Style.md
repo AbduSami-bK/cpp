@@ -1,0 +1,3 @@
+- Camel case for variable
+- snake case for functions and methods
+- Camel case with a capital starting letter for classes, structs and namespaces.

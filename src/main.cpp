@@ -30,24 +30,24 @@ int main(int argc, char *argv[]) {
 
 	// 3. Debug print effective config
 	std::cout << "Effective config:\n"
-				<< "  log_level = " << config.log_level << "\n"
-				<< "  dry_run   = " << std::boolalpha << config.dry_run << "\n";
+				<< "  logLevel = " << config.logLevel << "\n"
+				<< "  dryRun   = " << std::boolalpha << config.dryRun << "\n";
 
 	// Init logger
-	auto logLevel = AppLogging::from_string(config.log_level);
+	auto logLevel = AppLogging::from_string(config.logLevel);
 	AppLogging::init(logLevel);
 	spdlog::info("Starting DebuggableTemplate...");
 	DEBUG_LOG("Debug mode is active");
-	spdlog::debug("Config path: {}", config.config_file);
+	spdlog::debug("Config path: {}", config.configFile);
 
 	// Setup signals
 	std::signal(SIGINT, signal_handler);
 	std::signal(SIGTERM, signal_handler);
 
 	// Optional HTTP API
-	std::unique_ptr<std::thread> api_thread;
+	std::unique_ptr<std::thread> apiThread;
 	if (config.httpApi) {
-		api_thread = std::make_unique<std::thread>([]() {
+		apiThread = std::make_unique<std::thread>([]() {
 			httplib::Server svr;
 			svr.Get("/hello", [](const httplib::Request &, httplib::Response &res) {
 				res.set_content("Hello World", "text/plain");
@@ -67,9 +67,9 @@ int main(int argc, char *argv[]) {
 	}
 
 	spdlog::info("Shutting down cleanly...");
-	if (api_thread && api_thread->joinable()) {
+	if (apiThread && apiThread->joinable()) {
 		spdlog::info("Stopping HTTP API...");
-		api_thread->detach();	// TODO: not graceful, will improve later
+		apiThread->detach();	// TODO: not graceful, will improve later
 	}
 	return EXIT_SUCCESS;
 }

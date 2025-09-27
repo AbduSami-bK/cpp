@@ -8,13 +8,13 @@
 
 namespace AppLogging {
 
-	void init(Level level, const std::string &logfile, size_t max_file_size, size_t max_files) {
+	void init(Level level, const std::string &logfile, size_t maxFileSize, size_t maxFiles) {
 		try {
-			auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-			auto file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(logfile, max_file_size, max_files);
+			auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+			auto fileSink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(logfile, maxFileSize, maxFiles);
 
-			std::vector<spdlog::sink_ptr> sinks{console_sink, file_sink};
-			auto logger = std::make_shared<spdlog::logger>("app_logger", sinks.begin(), sinks.end());
+			std::vector<spdlog::sink_ptr> sinks{consoleSink, fileSink};
+			auto logger = std::make_shared<spdlog::logger>("appLogger", sinks.begin(), sinks.end());
 
 			spdlog::set_default_logger(logger);
 

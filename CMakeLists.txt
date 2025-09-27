@@ -9,6 +9,19 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+execute_process(
+	COMMAND git describe --tags --always --dirty
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	OUTPUT_VARIABLE GIT_HASH
+	OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+configure_file(
+	${CMAKE_SOURCE_DIR}/include/version.h.in
+	${CMAKE_BINARY_DIR}/generated/version.h
+	@ONLY
+)
+
 include(FetchContent)
 
 # spdlog
@@ -55,8 +68,15 @@ add_library(core_options
 	src/logging.cpp
 	src/config.cpp
 )
-target_include_directories(core_options PUBLIC include)
-target_link_libraries(core_options PUBLIC spdlog::spdlog CLI11::CLI11)
+target_include_directories(core_options PUBLIC
+	include
+	${CMAKE_BINARY_DIR}/generated
+)
+target_link_libraries(core_options PUBLIC
+	spdlog::spdlog
+	nlohmann_json::nlohmann_json
+	CLI11::CLI11
+)
 
 # Add source to this project's executable.
 add_executable(main src/main.cpp)
